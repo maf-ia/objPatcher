@@ -22,13 +22,57 @@ class MainWindow(QMainWindow):
     def buildInterface(self):
         self.setCentralWidget(QWidget(self))
         
-        view = QTreeView(self)
-        view.setSelectionBehavior(QAbstractItemView.SelectRows)
-        model = QStandardItemModel()
-        model.setHorizontalHeaderLabels(['Address', 'Hexa', 'Code', 'Comment'])
-        view.setModel(model)
-        view.setUniformRowHeights(True)
+        self.view = QTreeView(self)
+        self.view.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.model = QStandardItemModel()
+        self.model.setHorizontalHeaderLabels(['Address', 'Hexa', 'Code', 'Comment'])
+        self.view.setModel(self.model)
+        self.view.setUniformRowHeights(True)      
 
+        mainLayout=QVBoxLayout(self.centralWidget())
+        mainLayout.addWidget(self.view)
+        
+        hlay = QHBoxLayout()
+        edit = QLineEdit(self)
+        hlay.addWidget( edit )
+        mainLayout.addLayout( hlay )
+
+    def buildAction( self, label, shortcut, tip, method ):
+        action = QAction(label, self)
+        action.setShortcut(shortcut)
+        action.setStatusTip(tip)
+        action.triggered.connect(method)
+        
+        return action
+
+    def buildActions(self):
+        openAction = self.buildAction( "&Open", "Ctrl+O", "Open", self.actionOpen )
+        quitAction = self.buildAction( "&Quit", "Ctrl+Q", "Quit", self.actionQuit )
+        
+        unfoldAction = self.buildAction( "&Unfold ", "Ctrl+U", "Unfold tree", self.actionQuit )
+        foldAction = self.buildAction( "&Fold ", "", "Fold tree", self.actionQuit )
+        findAction = self.buildAction( "&Find ", "Ctrl+F", "Find", self.actionQuit )
+                
+        mainMenu = self.menuBar()
+        fileMenu = mainMenu.addMenu('&File')
+        fileMenu.addAction(openAction)
+        fileMenu.addAction(quitAction)
+        
+        editMenu = mainMenu.addMenu('&Edit')
+        editMenu.addAction(unfoldAction)
+        editMenu.addAction(foldAction)
+        editMenu.addAction(findAction)
+       
+    def actionQuit(self):
+        #print("Exit")
+        sys.exit()
+        
+    def actionOpen(self):
+        filename = QFileDialog.getOpenFileName(self, 'Open file', 
+         '.',"Binary files (*.*)")
+        self.loadFile( filename )
+
+    def loadFile( self, filename ):
         tree = parse.readDump()
 
         for section in tree.sections:
@@ -44,34 +88,7 @@ class MainWindow(QMainWindow):
                     
                 sectionItem.appendRow( blockItem )
                 #sectionItem.setFirstColumnSpanned(True)
-            model.appendRow( sectionItem )
-            view.setFirstColumnSpanned( model.rowCount()-1, view.rootIndex(), True)
-
-        mainLayout=QVBoxLayout(self.centralWidget())
-        mainLayout.addWidget(view)
-
-    def buildAction( self, label, shortcut, tip, method ):
-        action = QAction(label, self)
-        action.setShortcut(shortcut)
-        action.setStatusTip(tip)
-        action.triggered.connect(method)
-        
-        return action
-
-    def buildActions(self):
-        openAction = self.buildAction( "&Open", "Ctrl+O", "Open", self.actionQuit )
-        quitAction = self.buildAction( "&Quit", "Ctrl+Q", "Quit", self.actionQuit )
-                
-        mainMenu = self.menuBar()
-        fileMenu = mainMenu.addMenu('&File')
-        fileMenu.addAction(openAction)
-        fileMenu.addAction(quitAction)
-        
-
-    def actionQuit(self):
-        #print("Exit")
-        sys.exit()
-
-
+            self.model.appendRow( sectionItem )
+            self.view.setFirstColumnSpanned( self.model.rowCount()-1, self.view.rootIndex(), True)
 
     
