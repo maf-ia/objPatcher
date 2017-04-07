@@ -28,14 +28,21 @@ class MainWindow(QMainWindow):
         self.model.setHorizontalHeaderLabels(['Address', 'Hexa', 'Code', 'Comment'])
         self.view.setModel(self.model)
         self.view.setUniformRowHeights(True)      
-
-        mainLayout=QVBoxLayout(self.centralWidget())
-        mainLayout.addWidget(self.view)
+               
+        self.edit = QLineEdit(self)
+        self.edit.setEnabled( False )
+        self.saveBtn = QPushButton("Save", self)
+        self.saveBtn.setEnabled( False )
         
         hlay = QHBoxLayout()
-        edit = QLineEdit(self)
-        hlay.addWidget( edit )
+        hlay.addWidget( self.edit, 1 )
+        hlay.addWidget( self.saveBtn )
+        
+        mainLayout=QVBoxLayout(self.centralWidget())
+        mainLayout.addWidget(self.view)
         mainLayout.addLayout( hlay )
+        
+        
 
     def buildAction( self, label, shortcut, tip, method ):
         action = QAction(label, self)
@@ -56,6 +63,7 @@ class MainWindow(QMainWindow):
         mainMenu = self.menuBar()
         fileMenu = mainMenu.addMenu('&File')
         fileMenu.addAction(openAction)
+        fileMenu.addSeparator()
         fileMenu.addAction(quitAction)
         
         editMenu = mainMenu.addMenu('&Edit')
@@ -90,5 +98,7 @@ class MainWindow(QMainWindow):
                 #sectionItem.setFirstColumnSpanned(True)
             self.model.appendRow( sectionItem )
             self.view.setFirstColumnSpanned( self.model.rowCount()-1, self.view.rootIndex(), True)
-
+        
+        self.edit.setEnabled( True )
+        self.saveBtn.setEnabled( True )
     
