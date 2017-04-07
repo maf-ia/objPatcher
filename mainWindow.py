@@ -25,7 +25,6 @@ class MainWindow(QMainWindow):
         self.view = QTreeView(self)
         self.view.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.model = QStandardItemModel()
-        self.model.setHorizontalHeaderLabels(['Address', 'Hexa', 'Code', 'Comment'])
         self.view.setModel(self.model)
         self.view.setUniformRowHeights(True)      
                
@@ -83,6 +82,9 @@ class MainWindow(QMainWindow):
     def loadFile( self, filename ):
         tree = parse.readDump()
 
+        self.model.clear()
+        self.model.setHorizontalHeaderLabels(['Address', 'Hexa', 'Code', 'Comment'])
+        
         for section in tree.sections:
             sectionItem = QStandardItem( section.title )
             for block in section.blocks:
