@@ -61,6 +61,7 @@ class MainWindow(QMainWindow):
         editMenu = mainMenu.addMenu('&Edit')
         editMenu.addAction(unfoldAction)
         editMenu.addAction(foldAction)
+        editMenu.addSeparator()
         editMenu.addAction(findAction)
        
     def actionQuit(self):
@@ -68,8 +69,7 @@ class MainWindow(QMainWindow):
         sys.exit()
         
     def actionOpen(self):
-        filename = QFileDialog.getOpenFileName(self, 'Open file', 
-         '.',"Binary files (*.*)")
+        filename = QFileDialog.getOpenFileName(self, 'Open file', '.',"Binary files (*.*)")
         self.loadFile( filename )
 
     def loadFile( self, filename ):
