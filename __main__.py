@@ -8,6 +8,6 @@ from PyQt4 import QtCore, QtGui, uic
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
-    #mainWindow = myWindow.MyWindow()
-    mainwindow = mainWindow.MainWindow()
+    mainWindow = myWindow.MyWindow()
+    #mainwindow = mainWindow.MainWindow()
     sys.exit(app.exec_())

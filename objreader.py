@@ -3,10 +3,12 @@ import subprocess
 
 class ObjReader:
     def read(self, flavor, path):
+        commandLine = self.buildCommandLine(flavor, path)
         return subprocess.check_output("objdump -d -M "+ flavor + " '" + path +"'", shell=True).split("\n")
 
     def buildCommandLine(self, flavor, path):
-        return "objdump -d -M " + flavor + " '" + path +"'"
+        relativePath = self.getRelativePath(path)
+        return "objdump -d -M " + flavor + " '" + relativePath +"'"
     
     def getRelativePath(sef, path):
         cwd = os.getcwd()

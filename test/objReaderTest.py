@@ -1,6 +1,7 @@
 # coding=utf8
 import unittest
 import os
+dir = os.path.dirname(__file__)
 
 from ..model.section import *
 from ..model.function import *
@@ -11,8 +12,8 @@ from ..parser import Parser
 class ParserTest(unittest.TestCase):
     def test_build_commandLine(self):
         reader = ObjReader()
-        dir = os.path.dirname(__file__)
-        commandLine = reader.buildCommandLine('intel', reader.getRelativePath(os.path.join(dir, '../sample/step1.bin'))) 
+        
+        commandLine = reader.buildCommandLine('intel', os.path.join(dir, '../sample/step1.bin')) 
         expectedCommandLine = "objdump -d -M intel '/objPatcher/sample/step1.bin'"
         self.assertEqual(expectedCommandLine, commandLine)
     
