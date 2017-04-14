@@ -8,8 +8,8 @@ from .model.function import *
 class Parser:
     def parse(self, code):
         sections = []
-        currentSection = ""
-        currentFunction = ""
+        currentSection = None
+        currentFunction = None
         
         lines = code.split('\n')
         for line in lines:
