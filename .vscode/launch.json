@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "python",
+            "request": "launch",
+            "name": "Launch Program",
+            "program": "${workspaceRoot}/__main__.py",
+            "cwd": "${workspaceRoot}",
+            "console":"integratedTerminal",
+            "debugOptions": [
+                "WaitOnAbnormalExit",
+                "WaitOnNormalExit",
+                "RedirectOutput"
+            ]
+
+        }
+    ]
+}

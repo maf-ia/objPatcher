@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 class Line:
     def __init__( self, value ):
@@ -47,16 +48,18 @@ class TreeDump:
     
     def load( self, data ):
         for line in data:
-            if line != "":
-                if self.title == "":
-                    self.title = line
+            if line == "":
+                continue
+                
+            if self.title == "":
+                self.title = line
+            else:
+                if line[0] == " ":
+                    self.currentSection.addBlockLine( line )
+                elif line[0] == "0":
+                    self.currentSection.addBlock( line )
                 else:
-                    if line[0] == " ":
-                        self.currentSection.addBlockLine( line )
-                    elif line[0] == "0":
-                        self.currentSection.addBlock( line )
-                    else:
-                        self.addSection( line )
+                    self.addSection( line )
     
     def addSection( self, sectionTitle ):
         s = Section( sectionTitle )
@@ -64,13 +67,14 @@ class TreeDump:
         self.sections.append( s )
         
 
-def buildDump():
-    os.system( "objdump -d step1.bin > code.txt" )
+#def buildDump():
+    #os.system( "objdump -d -M intel step1.bin > code.txt" )
+
     
 def readDump():
-    with open( "./test/code.txt", "r" ) as fic:
-        data = fic.read().split( "\n" )
-        
+    #with open( "./test/code.txt", "r" ) as fic:    
+    data = subprocess.check_output("objdump -d -M intel sample/step1.bin", shell=True).split( "\n" )
+    
     tree = TreeDump()
     tree.load( data )
     return tree

@@ -1,0 +1,19 @@
+{
+    "python.linting.pylintEnabled": false,
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/*.pyc": true
+    },
+    "python.unitTest.unittestArgs": [
+        "-v",
+        "-s",
+        "./objPatcher/test",
+        "-p",
+        "*Test.py"
+    ],
+    "python.unitTest.unittestEnabled": true
+}
