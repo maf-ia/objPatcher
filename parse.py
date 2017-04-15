@@ -18,7 +18,6 @@ class Line:
             self.hexa = elts[1]
             data = self.hexa
             data = data.replace( " ", "" )
-            #print(data)
             self.binData = "".join( chr(int(data[2*i:2*(i+1)],16)) for i in range( int( len(data) / 2 ) ) )
             
         if len(elts) > 2:
@@ -38,7 +37,7 @@ class Block:
         self.lines.append( Line(line) )
         
     def getData( self ):
-		return "".join( self.lines.binData )
+        return "".join( self.lines.binData )
 		
 
 class Section:
@@ -50,7 +49,6 @@ class Section:
         self.blocks.append( Block( title ) )
         
     def addBlockLine( self, line ):
-        print( "line:", line )
         self.blocks[-1].addLine( line )
 
 class TreeDump:
@@ -63,7 +61,7 @@ class TreeDump:
             self.binData = fic.read()
             
         #data = subprocess.check_output("objdump -d -M intel " + filename, shell=True ).split( "\n" )
-        os.system( "objdump -d " + unicode(filename) + " > /tmp/tmp.txt" )
+        os.system( "objdump -d " + str(filename) + " > /tmp/tmp.txt" )
         
         with open( "/tmp/tmp.txt", "r" ) as fic:
             data = fic.read().split( "\n" )
@@ -85,14 +83,14 @@ class TreeDump:
                         self.addSection( line )
     
     def findOffsets(self):
-		curOffset = 0
-		for s in sections:
-			for b in s.blocks:
-				offset = self.findOffset( curOffset, b.getData() )
-				b.offset = offset
+        curOffset = 0
+        for s in sections:
+            for b in s.blocks:
+                offset = self.findOffset( curOffset, b.getData() )
+                b.offset = offset
     
     def findOffset(self, offset, data ):
-		return -1
+        return -1
     
     def addSection( self, sectionTitle ):
         s = Section( sectionTitle )
@@ -100,16 +98,5 @@ class TreeDump:
         self.sections.append( s )
         
 
-def buildDump():
-    os.system( "objdump -d step1.bin > code.txt" )
-    
-    
-def readDump():
-    with open( "./test/code.txt", "r" ) as fic:
-        data = fic.read().split( "\n" )
-        
-    tree = TreeDump()
-    tree.load( data )
-    return tree
         
         
