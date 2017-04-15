@@ -80,7 +80,9 @@ class MainWindow(QMainWindow):
         self.loadFile( filename )
 
     def loadFile( self, filename ):
-        tree = parse.readDump()
+        tree = parse.TreeDump()
+        tree.loadFile( filename )
+        #tree = parse.readDump()
 
         self.model.clear()
         self.model.setHorizontalHeaderLabels(['Address', 'Hexa', 'Code', 'Comment'])
