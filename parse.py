@@ -37,7 +37,7 @@ class Block:
         self.lines.append( Line(line) )
         
     def getData( self ):
-        return "".join( self.lines.binData )
+        return "".join( [ l.binData for l in self.lines] )
 		
 
 class Section:
@@ -68,6 +68,7 @@ class TreeDump:
         
         os.system( "rm /tmp/tmp.txt" )
         self.load( data )
+        self.findOffsets()
     
     def load( self, data ):
         for line in data:
@@ -84,13 +85,14 @@ class TreeDump:
     
     def findOffsets(self):
         curOffset = 0
-        for s in sections:
+        for s in self.sections:
             for b in s.blocks:
-                offset = self.findOffset( curOffset, b.getData() )
-                b.offset = offset
+                curOffset = self.findOffset( curOffset, b.getData() )
+                b.offset = curOffset
+                #print(b.offset, len(b.getData()))
     
     def findOffset(self, offset, data ):
-        return -1
+        return self.binData.find( bytes(data), offset )
     
     def addSection( self, sectionTitle ):
         s = Section( sectionTitle )
