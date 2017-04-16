@@ -80,6 +80,7 @@ class MainWindow(QMainWindow):
         self.loadFile( filename )
 
     def loadFile( self, filename ):
+        self.setWindowTitle( "objPatcher - " + filename )
         tree = parse.TreeDump()
         tree.loadFile( filename )
         
