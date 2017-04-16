@@ -26,10 +26,8 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(QWidget(self))
         
         self.view = TreedumpView(self)
-        self.view.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.model = QStandardItemModel()
         self.view.setModel(self.model)
-        self.view.setUniformRowHeights(True)      
                
         self.edit = QLineEdit(self)
         self.edit.setEnabled( False )
@@ -56,6 +54,7 @@ class MainWindow(QMainWindow):
 
     def buildActions(self):
         openAction = self.buildAction( "&Open", "Ctrl+O", "Open", self.actionOpen )
+        saveAction = self.buildAction( "&Save", "Ctrl+S", "Open", self.actionSave )
         quitAction = self.buildAction( "&Quit", "Ctrl+Q", "Quit", self.actionQuit )
         
         unfoldAction = self.buildAction( "&Unfold ", "Ctrl+U", "Unfold tree", self.actionUnfold )
@@ -65,6 +64,7 @@ class MainWindow(QMainWindow):
         mainMenu = self.menuBar()
         fileMenu = mainMenu.addMenu('&File')
         fileMenu.addAction(openAction)
+        fileMenu.addAction(saveAction)
         fileMenu.addSeparator()
         fileMenu.addAction(quitAction)
         
@@ -81,6 +81,9 @@ class MainWindow(QMainWindow):
     def actionOpen(self):
         filename = QFileDialog.getOpenFileName(self, 'Open file', '.',"Binary files (*.*)")
         self.loadFile( filename )
+        
+    def actionSave(self):
+        pass
         
     def actionUnfold(self):
         indexes = self.model.match(self.model.index(0,0), QtCore.Qt.DisplayRole, "*", -1, QtCore.Qt.MatchWildcard|QtCore.Qt.MatchRecursive)
