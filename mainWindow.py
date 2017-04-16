@@ -3,7 +3,10 @@ import sys
 
 from PyQt4.QtGui import *
 from PyQt4 import QtCore
+from treedump import *
 import parse
+
+  
 
 
 class MainWindow(QMainWindow):
@@ -22,7 +25,7 @@ class MainWindow(QMainWindow):
     def buildInterface(self):
         self.setCentralWidget(QWidget(self))
         
-        self.view = QTreeView(self)
+        self.view = TreedumpView(self)
         self.view.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.model = QStandardItemModel()
         self.view.setModel(self.model)
@@ -55,7 +58,7 @@ class MainWindow(QMainWindow):
         openAction = self.buildAction( "&Open", "Ctrl+O", "Open", self.actionOpen )
         quitAction = self.buildAction( "&Quit", "Ctrl+Q", "Quit", self.actionQuit )
         
-        unfoldAction = self.buildAction( "&Unfold ", "Ctrl+U", "Unfold tree", self.actionQuit )
+        unfoldAction = self.buildAction( "&Unfold ", "Ctrl+U", "Unfold tree", self.actionUnfold )
         foldAction = self.buildAction( "&Fold ", "", "Fold tree", self.actionQuit )
         findAction = self.buildAction( "&Find ", "Ctrl+F", "Find", self.actionQuit )
                 
@@ -78,11 +81,20 @@ class MainWindow(QMainWindow):
     def actionOpen(self):
         filename = QFileDialog.getOpenFileName(self, 'Open file', '.',"Binary files (*.*)")
         self.loadFile( filename )
+        
+    def actionUnfold(self):
+        indexes = self.model.match(self.model.index(0,0), QtCore.Qt.DisplayRole, "*", -1, QtCore.Qt.MatchWildcard|QtCore.Qt.MatchRecursive)
+        for idx in indexes:
+                self.view.expand(idx)
+        
+    def manageClick( self, new, old ):
+        print(new,old)
 
     def loadFile( self, filename ):
         self.setWindowTitle( "objPatcher - " + filename )
         tree = parse.TreeDump()
         tree.loadFile( filename )
+        
         
         self.model.clear()
         self.model.setHorizontalHeaderLabels(['Address', 'Hexa', 'Code', 'Comment'])
@@ -105,4 +117,8 @@ class MainWindow(QMainWindow):
         
         self.edit.setEnabled( True )
         self.saveBtn.setEnabled( True )
+        
+        #self.model.connect( self.manageClick )
+        #self.view.selectionChanged = self.manageClick
+        #self.view.connect(self.view, SIGNAL('selectionChanged()'), self.manageClick)
     
