@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 
 class Line:
     def __init__( self, value ):
@@ -18,7 +19,7 @@ class Line:
             self.hexa = elts[1]
             data = self.hexa
             data = data.replace( " ", "" )
-            self.binData = "".join( chr(int(data[2*i:2*(i+1)],16)) for i in range( int( len(data) / 2 ) ) )
+            self.binData = "".join([ chr(int(data[2*i:2*(i+1)],16)) for i in range( int( len(data) / 2 ) )] )
             
         if len(elts) > 2:
             codeElts = elts[2].split( "#" )
@@ -58,7 +59,10 @@ class TreeDump:
     
     def loadFile( self, filename ):
         with open( filename, "rb" ) as fic:
-            self.binData = fic.read()
+            if sys.version_info.major == 3:
+                self.binData = "".join([chr(e) for e in fic.read()])
+            else:
+                self.binData = fic.read()
             
         #data = subprocess.check_output("objdump -d -M intel " + filename, shell=True ).split( "\n" )
         os.system( "objdump -d " + str(filename) + " > /tmp/tmp.txt" )
@@ -92,7 +96,7 @@ class TreeDump:
                 #print(b.offset, len(b.getData()))
     
     def findOffset(self, offset, data ):
-        return self.binData.find( bytes(data), offset )
+        return self.binData.find( str(data), offset )
     
     def addSection( self, sectionTitle ):
         s = Section( sectionTitle )
