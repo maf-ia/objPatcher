@@ -59,7 +59,7 @@ class MainWindow(QMainWindow):
         quitAction = self.buildAction( "&Quit", "Ctrl+Q", "Quit", self.actionQuit )
         
         unfoldAction = self.buildAction( "&Unfold ", "Ctrl+U", "Unfold tree", self.actionUnfold )
-        foldAction = self.buildAction( "&Fold ", "", "Fold tree", self.actionQuit )
+        foldAction = self.buildAction( "&Fold ", "", "Fold tree", self.actionFold )
         findAction = self.buildAction( "&Find ", "Ctrl+F", "Find", self.actionQuit )
                 
         mainMenu = self.menuBar()
@@ -86,6 +86,11 @@ class MainWindow(QMainWindow):
         indexes = self.model.match(self.model.index(0,0), QtCore.Qt.DisplayRole, "*", -1, QtCore.Qt.MatchWildcard|QtCore.Qt.MatchRecursive)
         for idx in indexes:
                 self.view.expand(idx)
+                
+    def actionFold(self):
+        indexes = self.model.match(self.model.index(0,0), QtCore.Qt.DisplayRole, "*", -1, QtCore.Qt.MatchWildcard|QtCore.Qt.MatchRecursive)
+        for idx in indexes:
+                self.view.collapse(idx)
         
     def manageClick( self, new, old ):
         print(new,old)
@@ -121,4 +126,4 @@ class MainWindow(QMainWindow):
         #self.model.connect( self.manageClick )
         #self.view.selectionChanged = self.manageClick
         #self.view.connect(self.view, SIGNAL('selectionChanged()'), self.manageClick)
-    
+        self.actionUnfold()
