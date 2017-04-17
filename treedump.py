@@ -8,6 +8,12 @@ class TreedumpView(QTreeView):
         self.setUniformRowHeights(True)      
         
     def selectionChanged(self, *args, **kwds):
-        print ('selection changed')
+        super(QTreeView, self).selectionChanged(*args, **kwds)
+        #print ('selection changed')
         #self.emit( QtCore.SIGNAL('selectionChanged()'))
-        super(QTreeView, self).selectionChanged(*args, **kwds)  
+        # index.model()
+        #idx = self.currentIndex()
+        #print( idx.model() )
+          
+
+#class TreedumpView(QTreeView):

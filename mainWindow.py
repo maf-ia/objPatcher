@@ -28,6 +28,9 @@ class MainWindow(QMainWindow):
         self.view = TreedumpView(self)
         self.model = QStandardItemModel()
         self.view.setModel(self.model)
+        
+        #self.view.connect(self.view, QtCore.SIGNAL(clicked(QModelIndex)),self, SLOT(clicked(QModelIndex)))
+        self.view.clicked.connect(self.clickItem)
                
         self.edit = QLineEdit(self)
         self.edit.setEnabled( False )
@@ -42,7 +45,12 @@ class MainWindow(QMainWindow):
         mainLayout.addWidget(self.view)
         mainLayout.addLayout( hlay )
         
+    def clickItem(self,idx):
+        item = self.model.itemFromIndex(idx)
         
+        if item.line:
+            self.edit.setText( item.line.hexa )
+            #print(item.line.hexa)
 
     def buildAction( self, label, shortcut, tip, method ):
         action = QAction(label, self)
@@ -88,12 +96,12 @@ class MainWindow(QMainWindow):
     def actionUnfold(self):
         indexes = self.model.match(self.model.index(0,0), QtCore.Qt.DisplayRole, "*", -1, QtCore.Qt.MatchWildcard|QtCore.Qt.MatchRecursive)
         for idx in indexes:
-                self.view.expand(idx)
+            self.view.expand(idx)
                 
     def actionFold(self):
         indexes = self.model.match(self.model.index(0,0), QtCore.Qt.DisplayRole, "*", -1, QtCore.Qt.MatchWildcard|QtCore.Qt.MatchRecursive)
         for idx in indexes:
-                self.view.collapse(idx)
+            self.view.collapse(idx)
         
     def manageClick( self, new, old ):
         print(new,old)
@@ -113,9 +121,13 @@ class MainWindow(QMainWindow):
                 blockItem = QStandardItem( block.title )
                 for line in block.lines:
                     addrItem = QStandardItem(line.addr)
+                    addrItem.line = line
                     hexaItem = QStandardItem(line.hexa)
+                    hexaItem.line = line
                     codeItem = QStandardItem(line.code)
+                    codeItem.line = line
                     commentItem = QStandardItem(line.comment)
+                    commentItem.line = line
                     blockItem.appendRow( [addrItem, hexaItem, codeItem, commentItem] )
                     
                 sectionItem.appendRow( blockItem )
