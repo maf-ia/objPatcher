@@ -1,12 +1,11 @@
 import sys
+import re
 #, os, pprint, time
 
 from PyQt4.QtGui import *
 from PyQt4 import QtCore
 from treedump import *
 import parse
-
-  
 
 
 class MainWindow(QMainWindow):
@@ -17,8 +16,7 @@ class MainWindow(QMainWindow):
         
         self.buildInterface()
         self.buildActions() 
-        #self.statusBar()
-
+        
         self.show()
         
         
@@ -28,14 +26,17 @@ class MainWindow(QMainWindow):
         self.view = TreedumpView(self)
         self.model = QStandardItemModel()
         self.view.setModel(self.model)
-        
-        #self.view.connect(self.view, QtCore.SIGNAL(clicked(QModelIndex)),self, SLOT(clicked(QModelIndex)))
         self.view.clicked.connect(self.clickItem)
+        
+        import HTMLDelegate
+        delegate = HTMLDelegate.HTMLDelegate()
+        self.view.setItemDelegate(delegate)
                
         self.edit = QLineEdit(self)
         self.edit.setEnabled( False )
         self.saveBtn = QPushButton("Save", self)
         self.saveBtn.setEnabled( False )
+        self.saveBtn.clicked.connect(self.saveEdit)
         
         hlay = QHBoxLayout()
         hlay.addWidget( self.edit, 1 )
@@ -44,14 +45,7 @@ class MainWindow(QMainWindow):
         mainLayout=QVBoxLayout(self.centralWidget())
         mainLayout.addWidget(self.view)
         mainLayout.addLayout( hlay )
-        
-    def clickItem(self,idx):
-        item = self.model.itemFromIndex(idx)
-        
-        if item.line:
-            self.edit.setText( item.line.hexa )
-            #print(item.line.hexa)
-
+    
     def buildAction( self, label, shortcut, tip, method ):
         action = QAction(label, self)
         action.setShortcut(shortcut)
@@ -110,13 +104,12 @@ class MainWindow(QMainWindow):
         self.setWindowTitle( "objPatcher - " + filename )
         tree = parse.TreeDump()
         tree.loadFile( filename )
-        
-        
+                
         self.model.clear()
         self.model.setHorizontalHeaderLabels(['Address', 'Hexa', 'Code', 'Comment'])
         
         for section in tree.sections:
-            sectionItem = QStandardItem( section.title )
+            sectionItem = QStandardItem( "<u>" + section.title + "</u>" )
             for block in section.blocks:
                 blockItem = QStandardItem( block.title )
                 for line in block.lines:
@@ -142,3 +135,32 @@ class MainWindow(QMainWindow):
         #self.view.selectionChanged = self.manageClick
         #self.view.connect(self.view, SIGNAL('selectionChanged()'), self.manageClick)
         self.actionUnfold()
+
+    def clickItem(self,idx):
+        item = self.model.itemFromIndex(idx)
+        
+        if item.line:
+            self.currentLine = item.line
+            self.edit.setText( item.line.hexa )
+            self.saveBtn.setEnabled( True )
+            #print(item.line.hexa)
+        else:
+            self.saveBtn.setEnabled( False )
+            self.edit.setText( "" )
+
+    def saveEdit(self):
+        #check format
+        # then modify currentLine
+        val = self.edit.text()
+        val = val.upper()
+        print(val)
+        val = re.sub(r'[^0-9A-F]', '', val)
+        print(val)
+        if len(val) % 2 != 0:
+            QMessageBox.warning( self, "Bad string data", "Please enter a correct hexa string" )
+            return
+        newHexa = "".join( [chr(int(val[2*i:2*(i+1)],16)) for i in range( int( len(val) / 2 ) )] )
+        self.currentLine.newData( newHexa )
+        
+        
+        

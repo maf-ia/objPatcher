@@ -10,6 +10,7 @@ class Line:
         self.code = ""
         self.comment = ""
         self.binData = ""
+        self.newData = ""
         
         elts = value[2:].split( "\t" )
         if len(elts) > 0:
@@ -20,12 +21,16 @@ class Line:
             data = self.hexa
             data = data.replace( " ", "" )
             self.binData = "".join([ chr(int(data[2*i:2*(i+1)],16)) for i in range( int( len(data) / 2 ) )] )
+            self.newData = self.binData
             
         if len(elts) > 2:
             codeElts = elts[2].split( "#" )
             self.code = codeElts[0]    
             if len(codeElts) > 1:
                 self.comment = codeElts[1]
+
+    def newData( self, data ):
+        self.newData = data	
 
 
 class Block:
