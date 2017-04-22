@@ -140,7 +140,7 @@ class MainWindow(QMainWindow):
         item = self.model.itemFromIndex(idx)
         
         if item.line:
-            self.currentLine = item.line
+            self.currentIndex = idx
             self.edit.setText( item.line.hexa )
             self.saveBtn.setEnabled( True )
             #print(item.line.hexa)
@@ -160,7 +160,10 @@ class MainWindow(QMainWindow):
             QMessageBox.warning( self, "Bad string data", "Please enter a correct hexa string" )
             return
         newHexa = "".join( [chr(int(val[2*i:2*(i+1)],16)) for i in range( int( len(val) / 2 ) )] )
-        self.currentLine.newData( newHexa )
+        item = self.model.itemFromIndex(self.currentIndex)
+        item.line.setNewData( newHexa )
+        item.setText(item.line.hexa)
+        #self.currentLine.
         
         
         

@@ -29,8 +29,14 @@ class Line:
             if len(codeElts) > 1:
                 self.comment = codeElts[1]
 
-    def newData( self, data ):
+    def setNewData( self, data ):
         self.newData = data	
+        self.hexa = ""
+        for old,new in zip(self.binData,self.newData):
+            if old == new:
+                self.hexa += ('0'+hex(ord(new))[2:])[-2:]+ " "
+            else:
+                self.hexa += "<b>" + ('0'+hex(ord(new))[2:])[-2:]+ "</b> "
 
 
 class Block:
