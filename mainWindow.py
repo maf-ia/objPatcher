@@ -151,7 +151,7 @@ class MainWindow(QMainWindow):
 
     def clickItem(self,idx):
         item = self.model.itemFromIndex(idx)
-        
+        print( item.__type__)
         if item.line:
             self.currentIndex = idx
             self.edit.setText( item.line.hexa )
