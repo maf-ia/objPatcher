@@ -24,7 +24,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(QWidget(self))
         
         self.view = TreedumpView(self)
-        self.model = QStandardItemModel()
+        self.model = parse.TreeDump()
         self.view.setModel(self.model)
         self.view.clicked.connect(self.clickItem)
         
@@ -102,6 +102,22 @@ class MainWindow(QMainWindow):
 
     def loadFile( self, filename ):
         self.setWindowTitle( "objPatcher - " + filename )
+        
+        self.model.loadFile( filename )   
+        for element in self.model.sections :
+            self.view.setFirstColumnSpanned( element.row(), self.view.rootIndex(), True)
+        
+        
+        self.edit.setEnabled( True )
+        self.saveBtn.setEnabled( True )
+        
+        #self.model.connect( self.manageClick )
+        #self.view.selectionChanged = self.manageClick
+        #self.view.connect(self.view, SIGNAL('selectionChanged()'), self.manageClick)
+        self.actionUnfold()
+        
+    def loadFileOld( self, filename ):
+        self.setWindowTitle( "objPatcher - " + filename )
         tree = parse.TreeDump()
         tree.loadFile( filename )
                 
@@ -124,16 +140,13 @@ class MainWindow(QMainWindow):
                     blockItem.appendRow( [addrItem, hexaItem, codeItem, commentItem] )
                     
                 sectionItem.appendRow( blockItem )
-                #sectionItem.setFirstColumnSpanned(True)
+                
             self.model.appendRow( sectionItem )
             self.view.setFirstColumnSpanned( self.model.rowCount()-1, self.view.rootIndex(), True)
         
         self.edit.setEnabled( True )
         self.saveBtn.setEnabled( True )
         
-        #self.model.connect( self.manageClick )
-        #self.view.selectionChanged = self.manageClick
-        #self.view.connect(self.view, SIGNAL('selectionChanged()'), self.manageClick)
         self.actionUnfold()
 
     def clickItem(self,idx):

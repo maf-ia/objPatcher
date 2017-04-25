@@ -2,6 +2,22 @@ import os
 import subprocess
 import sys
 
+from PyQt4.QtGui import *
+
+class LineItem(QStandardItem):
+    def __init__( self, data, col ):
+        super(QStandardItem, self).__init__()
+        self.data = data
+        if col == 0:
+            self.setText( data.addr )
+        elif col == 1:
+            self.setText( data.hexa )
+        elif col == 2:
+            self.setText( data.code )
+        else:
+            self.setText( data.comment )
+
+
 class Line:
     def __init__( self, value ):
         self.value = value
@@ -38,37 +54,51 @@ class Line:
             else:
                 self.hexa += "<b>" + ('0'+hex(ord(new))[2:])[-2:]+ "</b> "
 
+    def buildItems( self ):
+        return [ LineItem(self,0), LineItem(self,1), LineItem(self,2), LineItem(self,3) ]
 
-class Block:
+
+class Block(QStandardItem):
     def __init__( self, title ):
+        super(QStandardItem, self).__init__(title)
         self.title = title
         self.lines = []
         self.offset = -1
         
     def addLine( self, line ):
-        self.lines.append( Line(line) )
+        newLine = Line(line)
+        self.lines.append( newLine )
+        self.appendRow( newLine.buildItems() )
         
     def getData( self ):
         return "".join( [ l.binData for l in self.lines] )
 		
 
-class Section:
+class Section(QStandardItem):
     def __init__( self, title ):
+        super(QStandardItem, self).__init__(title)
         self.title = title
         self.blocks = []
         
     def addBlock( self, title ):
-        self.blocks.append( Block( title ) )
+        newBlock = Block( title )
+        self.blocks.append( newBlock )
+        self.appendRow( newBlock )
         
     def addBlockLine( self, line ):
         self.blocks[-1].addLine( line )
 
-class TreeDump:
+class TreeDump(QStandardItemModel):
     def __init__( self ):
+        super(QStandardItemModel, self).__init__()
         self.title = ""
         self.sections = []
     
     def loadFile( self, filename ):
+        self.clear()
+        self.setHorizontalHeaderLabels(['Address', 'Hexa', 'Code', 'Comment'])
+        self.sections = []
+        
         with open( filename, "rb" ) as fic:
             if sys.version_info.major == 3:
                 self.binData = "".join([chr(e) for e in fic.read()])
@@ -97,6 +127,7 @@ class TreeDump:
                         self.currentSection.addBlock( line )
                     else:
                         self.addSection( line )
+                        
     
     def findOffsets(self):
         curOffset = 0
@@ -113,7 +144,7 @@ class TreeDump:
         s = Section( sectionTitle )
         self.currentSection = s
         self.sections.append( s )
-        
+        self.appendRow( s )
 
         
         
