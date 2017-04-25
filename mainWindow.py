@@ -151,10 +151,9 @@ class MainWindow(QMainWindow):
 
     def clickItem(self,idx):
         item = self.model.itemFromIndex(idx)
-        print( item.__type__)
-        if item.line:
+        if item.__class__.__name__ == "LineItem":
             self.currentIndex = idx
-            self.edit.setText( item.line.hexa )
+            self.edit.setText( item.data.hexa )
             self.saveBtn.setEnabled( True )
             #print(item.line.hexa)
         else:
@@ -174,9 +173,9 @@ class MainWindow(QMainWindow):
             return
         newHexa = "".join( [chr(int(val[2*i:2*(i+1)],16)) for i in range( int( len(val) / 2 ) )] )
         item = self.model.itemFromIndex(self.currentIndex)
-        item.line.setNewData( newHexa )
-        item.setText(item.line.hexa)
-        #self.currentLine.
+        item.data.setNewData( newHexa )
+        #item.setText(item.data.hexa)
+        
         
         
         
