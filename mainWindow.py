@@ -4,7 +4,6 @@ import re
 
 from PyQt4.QtGui import *
 from PyQt4 import QtCore
-from treedump import *
 import parse
 
 
@@ -23,7 +22,10 @@ class MainWindow(QMainWindow):
     def buildInterface(self):
         self.setCentralWidget(QWidget(self))
         
-        self.view = TreedumpView(self)
+        self.view = QTreeView()
+        self.view.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.view.setUniformRowHeights(True) 
+        
         self.model = parse.TreeDump()
         self.view.setModel(self.model)
         self.view.clicked.connect(self.clickItem)
