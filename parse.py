@@ -8,6 +8,7 @@ class LineItem(QStandardItem):
     def __init__( self, data, col ):
         super(QStandardItem, self).__init__()
         self.data = data
+        self.col = col
         if col == 0:
             self.setText( data.addr )
         elif col == 1:
@@ -17,6 +18,15 @@ class LineItem(QStandardItem):
         else:
             self.setText( data.comment )
 
+    def updateLine( self ):
+        if self.col == 0:
+            self.setText( self.data.addr )
+        elif self.col == 1:
+            self.setText( self.data.hexa )
+        elif self.col == 2:
+            self.setText( self.data.code )
+        else:
+            self.setText( self.data.comment )
 
 class Line:
     def __init__( self, value ):
@@ -48,14 +58,27 @@ class Line:
     def setNewData( self, data ):
         self.newData = data	
         self.hexa = ""
+        isDiff = False
         for old,new in zip(self.binData,self.newData):
             if old == new:
                 self.hexa += ('0'+hex(ord(new))[2:])[-2:]+ " "
             else:
                 self.hexa += "<b>" + ('0'+hex(ord(new))[2:])[-2:]+ "</b> "
+                isDiff = True
+        if isDiff:
+            self.code = "<i>" + self.code + "</i>"
+        for item in self.items:
+            item.updateLine()
+
+    def getRawHexa( self ):
+        ret = ""
+        for elt in self.newData:
+            ret  += ('0'+hex(ord(elt))[2:])[-2:]+ " "
+        return ret
 
     def buildItems( self ):
-        return [ LineItem(self,0), LineItem(self,1), LineItem(self,2), LineItem(self,3) ]
+        self.items = [ LineItem(self,0), LineItem(self,1), LineItem(self,2), LineItem(self,3) ]
+        return self.items
 
 
 class Block(QStandardItem):

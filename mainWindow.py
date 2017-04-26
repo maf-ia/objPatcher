@@ -153,26 +153,29 @@ class MainWindow(QMainWindow):
         item = self.model.itemFromIndex(idx)
         if item.__class__.__name__ == "LineItem":
             self.currentIndex = idx
-            self.edit.setText( item.data.hexa )
+            self.edit.setText( item.data.getRawHexa() )
+            self.edit.setEnabled( True )
             self.saveBtn.setEnabled( True )
-            #print(item.line.hexa)
         else:
             self.saveBtn.setEnabled( False )
+            self.edit.setEnabled( False )
             self.edit.setText( "" )
 
     def saveEdit(self):
-        #check format
-        # then modify currentLine
+        item = self.model.itemFromIndex(self.currentIndex)
         val = self.edit.text()
         val = val.upper()
-        print(val)
+        #print(val)
         val = re.sub(r'[^0-9A-F]', '', val)
-        print(val)
+        #print(val)
         if len(val) % 2 != 0:
             QMessageBox.warning( self, "Bad string data", "Please enter a correct hexa string" )
             return
+        if len(val)/2 != len(item.data.binData):
+            QMessageBox.warning( self, "Bad string data", "Please keep same data length" )
+            return
         newHexa = "".join( [chr(int(val[2*i:2*(i+1)],16)) for i in range( int( len(val) / 2 ) )] )
-        item = self.model.itemFromIndex(self.currentIndex)
+        
         item.data.setNewData( newHexa )
         #item.setText(item.data.hexa)
         
