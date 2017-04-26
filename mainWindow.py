@@ -1,6 +1,5 @@
 import sys
 import re
-#, os, pprint, time
 
 from PyQt4.QtGui import *
 from PyQt4 import QtCore
@@ -87,7 +86,8 @@ class MainWindow(QMainWindow):
         self.loadFile( filename )
         
     def actionSave(self):
-        pass
+        filename = QFileDialog.getSaveFileName(self, 'Save file', '.',"Binary files (*.*)")
+        self.saveFile( filename )
         
     def actionUnfold(self):
         indexes = self.model.match(self.model.index(0,0), QtCore.Qt.DisplayRole, "*", -1, QtCore.Qt.MatchWildcard|QtCore.Qt.MatchRecursive)
@@ -117,7 +117,8 @@ class MainWindow(QMainWindow):
         
         self.actionUnfold()
         
-    
+    def saveFile( self, filename ):
+        print( filename )
 
     def clickItem(self,idx):
         item = self.model.itemFromIndex(idx)
