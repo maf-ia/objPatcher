@@ -104,50 +104,18 @@ class MainWindow(QMainWindow):
         self.setWindowTitle( "objPatcher - " + filename )
         
         self.model.loadFile( filename )   
-        for element in self.model.sections :
-            self.view.setFirstColumnSpanned( element.row(), self.view.rootIndex(), True)
-        
-        
-        self.edit.setEnabled( True )
-        self.saveBtn.setEnabled( True )
-        
-        #self.model.connect( self.manageClick )
-        #self.view.selectionChanged = self.manageClick
-        #self.view.connect(self.view, SIGNAL('selectionChanged()'), self.manageClick)
-        self.actionUnfold()
-        
-    def loadFileOld( self, filename ):
-        self.setWindowTitle( "objPatcher - " + filename )
-        tree = parse.TreeDump()
-        tree.loadFile( filename )
-                
-        self.model.clear()
-        self.model.setHorizontalHeaderLabels(['Address', 'Hexa', 'Code', 'Comment'])
-        
-        for section in tree.sections:
-            sectionItem = QStandardItem( "<u>" + section.title + "</u>" )
+        for section in self.model.sections :
+            self.view.setFirstColumnSpanned( section.row(), self.view.rootIndex(), True)
             for block in section.blocks:
-                blockItem = QStandardItem( block.title )
-                for line in block.lines:
-                    addrItem = QStandardItem(line.addr)
-                    addrItem.line = line
-                    hexaItem = QStandardItem(line.hexa)
-                    hexaItem.line = line
-                    codeItem = QStandardItem(line.code)
-                    codeItem.line = line
-                    commentItem = QStandardItem(line.comment)
-                    commentItem.line = line
-                    blockItem.appendRow( [addrItem, hexaItem, codeItem, commentItem] )
-                    
-                sectionItem.appendRow( blockItem )
-                
-            self.model.appendRow( sectionItem )
-            self.view.setFirstColumnSpanned( self.model.rowCount()-1, self.view.rootIndex(), True)
+                self.view.setFirstColumnSpanned( block.row(), section.index(), True)
+        
         
         self.edit.setEnabled( True )
         self.saveBtn.setEnabled( True )
         
         self.actionUnfold()
+        
+    
 
     def clickItem(self,idx):
         item = self.model.itemFromIndex(idx)
