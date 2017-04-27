@@ -1,5 +1,7 @@
+import os
 import sys
 import re
+import tempfile
 
 from PyQt4.QtGui import *
 from PyQt4 import QtCore
@@ -58,6 +60,7 @@ class MainWindow(QMainWindow):
     def buildActions(self):
         openAction = self.buildAction( "&Open", "Ctrl+O", "Open", self.actionOpen )
         saveAction = self.buildAction( "&Save", "Ctrl+S", "Open", self.actionSave )
+        reloadAction = self.buildAction( "&Reload", "Ctrl+R", "Reload", self.actionReload )
         quitAction = self.buildAction( "&Quit", "Ctrl+Q", "Quit", self.actionQuit )
         
         unfoldAction = self.buildAction( "&Unfold ", "Ctrl+U", "Unfold tree", self.actionUnfold )
@@ -68,6 +71,7 @@ class MainWindow(QMainWindow):
         fileMenu = mainMenu.addMenu('&File')
         fileMenu.addAction(openAction)
         fileMenu.addAction(saveAction)
+        fileMenu.addAction(reloadAction)
         fileMenu.addSeparator()
         fileMenu.addAction(quitAction)
         
@@ -78,7 +82,6 @@ class MainWindow(QMainWindow):
         editMenu.addAction(findAction)
        
     def actionQuit(self):
-        #print("Exit")
         sys.exit()
         
     def actionOpen(self):
@@ -89,6 +92,12 @@ class MainWindow(QMainWindow):
         filename = QFileDialog.getSaveFileName(self, 'Save file', '.',"Binary files (*.*)")
         self.saveFile( filename )
         
+    def actionReload(self):
+        tempFilename = tempfile.mktemp()
+        self.saveFile( tempFilename )
+        self.loadFile( tempFilename )
+        os.system( "rm " + tempFilename )
+                
     def actionUnfold(self):
         indexes = self.model.match(self.model.index(0,0), QtCore.Qt.DisplayRole, "*", -1, QtCore.Qt.MatchWildcard|QtCore.Qt.MatchRecursive)
         for idx in indexes:
@@ -119,7 +128,6 @@ class MainWindow(QMainWindow):
         
     def saveFile( self, filename ):
         self.model.saveFile( filename )
-        #print( filename )
 
     def clickItem(self,idx):
         item = self.model.itemFromIndex(idx)
@@ -137,9 +145,8 @@ class MainWindow(QMainWindow):
         item = self.model.itemFromIndex(self.currentIndex)
         val = str(self.edit.text())
         val = val.upper()
-        #print(val)
         val = re.sub(r'[^0-9A-F]', '', val)
-        #print(val)
+
         if len(val) % 2 != 0:
             QMessageBox.warning( self, "Bad string data", "Please enter a correct hexa string" )
             return
@@ -149,7 +156,6 @@ class MainWindow(QMainWindow):
         newHexa = "".join( [chr(int(val[2*i:2*(i+1)],16)) for i in range( int( len(val) / 2 ) )] )
         
         item.data.setNewData( newHexa )
-        #item.setText(item.data.hexa)
         
         
         
