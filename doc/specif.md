@@ -1,9 +1,9 @@
 * Todo
-- Save binary
-- Add button for reload tree (after patching)
 - hexa editor ?
 - Search
 - Pb when comment contains "<" -> disappear in html display
+- options for objdump
+- pyqt5 ?
 
 * Parsing specif :
 - Ignore void line  
