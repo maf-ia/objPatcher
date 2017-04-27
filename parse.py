@@ -1,6 +1,7 @@
 import os
 import subprocess
 import sys
+import tempfile
 
 from PyQt4.QtGui import *
 
@@ -149,12 +150,14 @@ class TreeDump(QStandardItemModel):
                 self.binData = fic.read()
             
         #data = subprocess.check_output("objdump -d -M intel " + filename, shell=True ).split( "\n" )
-        os.system( "objdump -d " + str(filename) + " > /tmp/tmp.txt" )
+        tempFilename = tempfile.mktemp()
+        os.system( "objdump -d " + str(filename) + " > " + tempFilename )
         
-        with open( "/tmp/tmp.txt", "r" ) as fic:
+        
+        with open( tempFilename, "r" ) as fic:
             data = fic.read().split( "\n" )
         
-        os.system( "rm /tmp/tmp.txt" )
+        os.system( "rm " + tempFilename )
         self.load( data )
         self.findOffsets()
     
