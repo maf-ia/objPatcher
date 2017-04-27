@@ -118,7 +118,8 @@ class MainWindow(QMainWindow):
         self.actionUnfold()
         
     def saveFile( self, filename ):
-        print( filename )
+        self.model.saveFile( filename )
+        #print( filename )
 
     def clickItem(self,idx):
         item = self.model.itemFromIndex(idx)
@@ -134,7 +135,7 @@ class MainWindow(QMainWindow):
 
     def saveEdit(self):
         item = self.model.itemFromIndex(self.currentIndex)
-        val = self.edit.text()
+        val = str(self.edit.text())
         val = val.upper()
         #print(val)
         val = re.sub(r'[^0-9A-F]', '', val)

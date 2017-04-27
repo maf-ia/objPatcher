@@ -4,6 +4,14 @@ import sys
 
 from PyQt4.QtGui import *
 
+def updateString( chaine, pos, car ):
+    if pos == 0:
+        return car + chaine[1:]
+    elif pos == len(chaine) - 1:
+        return chaine[:-1] + car
+    else:
+        return chaine[:pos] + car + chaine[pos+1:]
+
 class LineItem(QStandardItem):
     def __init__( self, data, col ):
         super(QStandardItem, self).__init__()
@@ -79,6 +87,9 @@ class Line:
     def buildItems( self ):
         self.items = [ LineItem(self,0), LineItem(self,1), LineItem(self,2), LineItem(self,3) ]
         return self.items
+        
+    def isModified( self ):
+        return self.newData != self.binData
 
 
 class Block(QStandardItem):
@@ -95,6 +106,15 @@ class Block(QStandardItem):
         
     def getData( self ):
         return "".join( [ l.binData for l in self.lines] )
+        
+    def getCurrentData( self ):
+        return "".join( [ l.newData for l in self.lines] )
+        
+    def isModified( self ):
+        for line in self.lines:
+            if line.isModified():
+                return True
+        return False
 		
 
 class Section(QStandardItem):
@@ -151,6 +171,17 @@ class TreeDump(QStandardItemModel):
                     else:
                         self.addSection( line )
                         
+    def saveFile( self, filename ):
+        self.updateBinaryData()
+        with open( filename, "wb" ) as fic:
+            fic.write( self.binData )
+    
+    def updateBinaryData( self ):
+        for section in self.sections:
+            for block in section.blocks:
+                if block.isModified():
+                    for pos,car in enumerate(block.getCurrentData()):
+                        self.binData = updateString( self.binData, block.offset + pos, car )
     
     def findOffsets(self):
         curOffset = 0
