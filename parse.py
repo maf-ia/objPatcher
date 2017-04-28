@@ -177,7 +177,10 @@ class TreeDump(QStandardItemModel):
     def saveFile( self, filename ):
         self.updateBinaryData()
         with open( filename, "wb" ) as fic:
-            fic.write( self.binData )
+            if sys.version_info.major == 3:
+                fic.write( self.binData.encode('ISO-8859-1') )
+            else:
+                fic.write( self.binData )
     
     def updateBinaryData( self ):
         for section in self.sections:
