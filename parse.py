@@ -96,8 +96,9 @@ class Line:
 
 class Block(QStandardItem):
     def __init__( self, title ):
-        super(QStandardItem, self).__init__(title)
-        self.title = title
+        result = title.replace("<", "&lt;" )
+        super(QStandardItem, self).__init__(result)
+        self.title = result
         self.lines = []
         self.offset = -1
         
