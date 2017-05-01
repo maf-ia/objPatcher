@@ -25,7 +25,8 @@ class LineItem(QStandardItem):
         elif col == 2:
             self.setText( data.code )
         else:
-            self.setText( data.comment )
+            result = data.comment.replace("<", "&lt;" )
+            self.setText( result )
 
     def updateLine( self ):
         if self.col == 0:
