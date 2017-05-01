@@ -23,7 +23,8 @@ class LineItem(QStandardItem):
         elif col == 1:
             self.setText( data.hexa )
         elif col == 2:
-            self.setText( data.code )
+            result = data.code.replace("<", "&lt;" )
+            self.setText( result )
         else:
             result = data.comment.replace("<", "&lt;" )
             self.setText( result )
