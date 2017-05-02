@@ -3,8 +3,9 @@ import sys
 import re
 import tempfile
 
-from PyQt4.QtGui import *
-from PyQt4 import QtCore
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+from PyQt5 import QtCore
 import parse
 
 
@@ -61,6 +62,7 @@ class MainWindow(QMainWindow):
         openAction = self.buildAction( "&Open", "Ctrl+O", "Open", self.actionOpen )
         saveAction = self.buildAction( "&Save", "Ctrl+S", "Open", self.actionSave )
         reloadAction = self.buildAction( "&Reload", "Ctrl+R", "Reload", self.actionReload )
+        optionAction = self.buildAction( "O&ptions", "", "Options", self.actionOption )
         quitAction = self.buildAction( "&Quit", "Ctrl+Q", "Quit", self.actionQuit )
         
         unfoldAction = self.buildAction( "&Unfold ", "Ctrl+U", "Unfold tree", self.actionUnfold )
@@ -72,6 +74,7 @@ class MainWindow(QMainWindow):
         fileMenu.addAction(openAction)
         fileMenu.addAction(saveAction)
         fileMenu.addAction(reloadAction)
+        fileMenu.addAction(optionAction)
         fileMenu.addSeparator()
         fileMenu.addAction(quitAction)
         
@@ -86,17 +89,20 @@ class MainWindow(QMainWindow):
         
     def actionOpen(self):
         filename = QFileDialog.getOpenFileName(self, 'Open file', '.',"Binary files (*.*)")
-        self.loadFile( filename )
+        self.loadFile( filename[0] )
         
     def actionSave(self):
         filename = QFileDialog.getSaveFileName(self, 'Save file', '.',"Binary files (*.*)")
-        self.saveFile( filename )
+        self.saveFile( filename[0] )
         
     def actionReload(self):
         tempFilename = tempfile.mktemp()
         self.saveFile( tempFilename )
         self.loadFile( tempFilename )
         os.system( "rm " + tempFilename )
+        
+    def actionOption(self):
+        pass
                 
     def actionUnfold(self):
         indexes = self.model.match(self.model.index(0,0), QtCore.Qt.DisplayRole, "*", -1, QtCore.Qt.MatchWildcard|QtCore.Qt.MatchRecursive)

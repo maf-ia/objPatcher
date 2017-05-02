@@ -3,7 +3,7 @@ import subprocess
 import sys
 import tempfile
 
-from PyQt4.QtGui import *
+from PyQt5.QtGui import *
 
 def updateString( chaine, pos, car ):
     if pos == 0:

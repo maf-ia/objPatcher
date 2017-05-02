@@ -1,12 +1,13 @@
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 
 class HTMLDelegate(QStyledItemDelegate):
     def __init__(self):
         super(QStyledItemDelegate, self).__init__()
 
     def paint( self, painter, option, index ):
-        options = QStyleOptionViewItemV4(option)
+        options = QStyleOptionViewItem(option)
         self.initStyleOption(options, index)
 
         painter.save()
@@ -24,7 +25,7 @@ class HTMLDelegate(QStyledItemDelegate):
         painter.restore()
     
     def sizeHint( self, option, index ):
-        options = QStyleOptionViewItemV4(option)
+        options = QStyleOptionViewItem(option)
         self.initStyleOption(options, index)
 
         doc = QTextDocument()
