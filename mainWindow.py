@@ -124,7 +124,7 @@ class MainWindow(QMainWindow):
         settings.endGroup()
         if option.exec() == QDialog.Accepted:
             settings.beginGroup("Objdump")
-            settings.setValue("attsyntax", option.isATTSyntax())
+            settings.setValue("isATTSyntax", option.isATTSyntax())
             self.commandBuilder.isATTSyntax = option.isATTSyntax()
             settings.endGroup();
 
@@ -190,7 +190,7 @@ class MainWindow(QMainWindow):
 
     def readSettings(self):
         settings = QtCore.QSettings()
-
+        print( settings.fileName() )
         settings.beginGroup("Objdump")
         self.commandBuilder.isATTSyntax = settings.value("isATTSyntax", True )
         settings.endGroup()
