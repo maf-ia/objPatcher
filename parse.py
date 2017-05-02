@@ -136,10 +136,11 @@ class Section(QStandardItem):
         self.blocks[-1].addLine( line )
 
 class TreeDump(QStandardItemModel):
-    def __init__( self ):
+    def __init__( self, commandBuilder ):
         super(QStandardItemModel, self).__init__()
         self.title = ""
         self.sections = []
+        self.commandBuilder = commandBuilder
     
     def loadFile( self, filename ):
         self.clear()
@@ -154,7 +155,7 @@ class TreeDump(QStandardItemModel):
             
         #data = subprocess.check_output("objdump -d -M intel " + filename, shell=True ).split( "\n" )
         tempFilename = tempfile.mktemp()
-        os.system( "objdump -d " + str(filename) + " > " + tempFilename )
+        os.system( self.commandBuilder.getParseCommand(filename) + " > " + tempFilename )
         
         
         with open( tempFilename, "r" ) as fic:

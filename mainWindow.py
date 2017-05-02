@@ -6,8 +6,19 @@ import tempfile
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5 import QtCore
-import parse
 
+import parse
+import optionsDialog
+
+class CommandBuilder:
+    def __init__(self):
+        self.isATTSyntax = True
+        
+    def getParseCommand( self, filename ):
+        if self.isATTSyntax:
+            return "objdump -d " + str(filename)
+        else:
+            return "objdump -d -M intel " + str(filename)
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -15,8 +26,12 @@ class MainWindow(QMainWindow):
         self.setGeometry(50, 50, 500, 300)
         self.setWindowTitle("objPatcher")
         
+        self.commandBuilder = CommandBuilder()
+        
         self.buildInterface()
-        self.buildActions() 
+        self.buildActions()
+        
+        self.readSettings() 
         
         self.show()
         
@@ -28,7 +43,7 @@ class MainWindow(QMainWindow):
         self.view.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.view.setUniformRowHeights(True) 
         
-        self.model = parse.TreeDump()
+        self.model = parse.TreeDump(self.commandBuilder)
         self.view.setModel(self.model)
         self.view.clicked.connect(self.clickItem)
         
@@ -102,7 +117,17 @@ class MainWindow(QMainWindow):
         os.system( "rm " + tempFilename )
         
     def actionOption(self):
-        pass
+        option = optionsDialog.OptionsDialog()
+        settings = QtCore.QSettings()
+        settings.beginGroup("Objdump")
+        option.syntaxBox.setChecked( settings.value("isATTSyntax", True ) )
+        settings.endGroup()
+        if option.exec() == QDialog.Accepted:
+            settings.beginGroup("Objdump")
+            settings.setValue("attsyntax", option.isATTSyntax())
+            self.commandBuilder.isATTSyntax = option.isATTSyntax()
+            settings.endGroup();
+
                 
     def actionUnfold(self):
         indexes = self.model.match(self.model.index(0,0), QtCore.Qt.DisplayRole, "*", -1, QtCore.Qt.MatchWildcard|QtCore.Qt.MatchRecursive)
@@ -162,7 +187,13 @@ class MainWindow(QMainWindow):
         newHexa = "".join( [chr(int(val[2*i:2*(i+1)],16)) for i in range( int( len(val) / 2 ) )] )
         
         item.data.setNewData( newHexa )
-        
-        
+
+    def readSettings(self):
+        settings = QtCore.QSettings()
+
+        settings.beginGroup("Objdump")
+        self.commandBuilder.isATTSyntax = settings.value("isATTSyntax", True )
+        settings.endGroup()
+
         
         
