@@ -131,9 +131,9 @@ class MainWindow(QMainWindow):
         option = optionsDialog.OptionsDialog()
         settings = QtCore.QSettings()
         settings.beginGroup("Objdump")
-        option.syntaxBox.setChecked( settings.value("isATTSyntax", True ) )
+        option.syntaxBox.setChecked( bool(settings.value("isATTSyntax", True )) )
         settings.endGroup()
-        if option.exec() == QDialog.Accepted:
+        if option.exec_() == QDialog.Accepted:
             settings.beginGroup("Objdump")
             settings.setValue("isATTSyntax", option.isATTSyntax())
             self.commandBuilder.isATTSyntax = option.isATTSyntax()
