@@ -1,10 +1,9 @@
 * Todo
 - hexa editor ?
 - Search
-- Pb when comment contains "<" -> disappear in html display
+- Pb when comment contains "<" -> disappear in html display : fixed but not clean
 - options for objdump
-- pyqt5 ?
-- Garder le focus au reload
+- Keep focus when reload
 - Read only sur le treeview ou permettre l'enregistrement à partir de celui-ci
 - Enregistrer à l'emplacement du binaire d'origin ou à l'emplacement de la dernière sauvegarde
   
