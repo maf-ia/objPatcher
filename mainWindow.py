@@ -111,9 +111,20 @@ class MainWindow(QMainWindow):
         self.saveFile( filename[0] )
         
     def actionReload(self):
+        index = self.view.currentIndex()
+        print(index)
+        isIndex = index.isValid()
+        if isIndex:
+            item = self.model.itemFromIndex(index)
+        
         tempFilename = tempfile.mktemp()
         self.saveFile( tempFilename )
         self.loadFile( tempFilename )
+        
+        if isIndex:
+            index = self.model.findItemIndex( item )
+            self.view.setCurrentIndex(index)    
+                
         os.system( "rm " + tempFilename )
         
     def actionOption(self):
@@ -190,7 +201,6 @@ class MainWindow(QMainWindow):
 
     def readSettings(self):
         settings = QtCore.QSettings()
-        print( settings.fileName() )
         settings.beginGroup("Objdump")
         self.commandBuilder.isATTSyntax = settings.value("isATTSyntax", True )
         settings.endGroup()

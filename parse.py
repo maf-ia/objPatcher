@@ -209,6 +209,24 @@ class TreeDump(QStandardItemModel):
         self.currentSection = s
         self.sections.append( s )
         self.appendRow( s )
-
+        
+    def findItemIndex( self, item ):
+        print(item)
+        if item.__class__.__name__ == "Section":
+            for s in self.sections:
+                if s.title == item.title:
+                    return self.indexFromItem(s)
+        elif item.__class__.__name__ == "Block":
+            for s in self.sections:
+                for b in s.blocks:
+                    if b.title == item.title:
+                        return self.indexFromItem(b)
+        elif item.__class__.__name__ == "LineItem":
+            for s in self.sections:
+                for b in s.blocks:
+                    for l in b.lines:
+                        if int(l.addr,16) >= int(item.data.addr,16):
+                            return self.indexFromItem(l.items[1])
+                            
         
         
