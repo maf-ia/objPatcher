@@ -104,11 +104,13 @@ class MainWindow(QMainWindow):
         
     def actionOpen(self):
         filename = QFileDialog.getOpenFileName(self, 'Open file', '.',"Binary files (*.*)")
-        self.loadFile( filename[0] )
+        if filename[0] != '':
+            self.loadFile( filename[0] )
         
     def actionSave(self):
         filename = QFileDialog.getSaveFileName(self, 'Save file', '.',"Binary files (*.*)")
-        self.saveFile( filename[0] )
+        if filename[0] != '':
+            self.saveFile( filename[0] )
         
     def actionReload(self):
         index = self.view.currentIndex()
