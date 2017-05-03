@@ -23,6 +23,7 @@ class CommandBuilder:
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
+        self.currentDir = '.'
         self.setGeometry(50, 50, 500, 300)
         self.setWindowTitle("objPatcher")
         
@@ -103,12 +104,12 @@ class MainWindow(QMainWindow):
         sys.exit()
         
     def actionOpen(self):
-        filename = QFileDialog.getOpenFileName(self, 'Open file', '.',"Binary files (*.*)")
+        filename = QFileDialog.getOpenFileName(self, 'Open file', self.currentDir,"Binary files (*.*)")
         if filename[0] != '':
             self.loadFile( filename[0] )
         
     def actionSave(self):
-        filename = QFileDialog.getSaveFileName(self, 'Save file', '.',"Binary files (*.*)")
+        filename = QFileDialog.getSaveFileName(self, 'Save file', self.currentDir,"Binary files (*.*)")
         if filename[0] != '':
             self.saveFile( filename[0] )
         
@@ -157,6 +158,7 @@ class MainWindow(QMainWindow):
 
     def loadFile( self, filename ):
         self.setWindowTitle( "objPatcher - " + filename )
+        self.currentDir = "/".join( filename.split( "/" )[:-1] )
         
         self.model.loadFile( filename )   
         for section in self.model.sections :
@@ -171,6 +173,7 @@ class MainWindow(QMainWindow):
         self.actionUnfold()
         
     def saveFile( self, filename ):
+        self.currentDir = "/".join( filename.split( "/" )[:-1] )
         self.model.saveFile( filename )
 
     def clickItem(self,idx):
