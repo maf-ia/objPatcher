@@ -114,6 +114,10 @@ class MainWindow(QMainWindow):
             self.saveFile( filename[0] )
         
     def actionReload(self):
+        columnWidths = []
+        for i in range(0,4):
+            columnWidths.append(self.view.columnWidth(i))
+
         index = self.view.currentIndex()
         print(index)
         isIndex = index.isValid()
@@ -127,7 +131,9 @@ class MainWindow(QMainWindow):
         if isIndex:
             index = self.model.findItemIndex( item )
             self.view.setCurrentIndex(index)    
-                
+        for i in range(0,4):
+            self.view.setColumnWidth(i, columnWidths[i])
+
         os.system( "rm " + tempFilename )
         
     def actionOption(self):
