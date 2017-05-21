@@ -104,12 +104,12 @@ class MainWindow(QMainWindow):
         sys.exit()
         
     def actionOpen(self):
-        filename = QFileDialog.getOpenFileName(self, 'Open file', self.currentDir,"Binary files (*.*)")
+        filename = QFileDialog.getOpenFileName(self, 'Open file', self.currentDir,"Binary files (*)")
         if filename[0] != '':
             self.loadFile( filename[0] )
         
     def actionSave(self):
-        filename = QFileDialog.getSaveFileName(self, 'Save file', self.currentDir,"Binary files (*.*)")
+        filename = QFileDialog.getSaveFileName(self, 'Save file', self.currentDir,"Binary files (*)")
         if filename[0] != '':
             self.saveFile( filename[0] )
         
