@@ -171,7 +171,9 @@ class TreeDump(QStandardItemModel):
                 if self.title == "":
                     self.title = line
                 else:
-                    if line[0] == " ":
+                    if line.strip() == "...":
+                        #print("ignoring")
+                    elif line[0] == " ":
                         self.currentSection.addBlockLine( line )
                     elif line[0] == "0":
                         self.currentSection.addBlock( line )
